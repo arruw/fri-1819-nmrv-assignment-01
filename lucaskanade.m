@@ -1,4 +1,7 @@
 function [U, V] = lucaskanade(I1, I2, n)
+% I1 - first image matrix (grayscale)
+% I2 - second image matrix (grayscale)
+% n - size of the neighborhood (n x n)
 
 [I1x, I1y] = gaussderiv(I1, 1);
 [I2x, I2y] = gaussderiv(I2, 1);
