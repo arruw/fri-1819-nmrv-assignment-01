@@ -78,3 +78,5 @@ octave-workspace
 .history
 
 # End of https://www.gitignore.io/api/git,octave,matlab,visualstudiocode
+
+results/camera/**
