@@ -10,7 +10,7 @@ I2 = imrotate(I1, 1, 'bicubic', 'crop');
 [Uhs, Vhs] = hornschunck(I1, I2, 0.5, 2000);
 
 figure(1); clf;
-set(gcf, 'visible', 'off');
+%set(gcf, 'visible', 'off');
 set(gcf, 'name', 'Exercise 01');
 hold on;
 subplot(3, 2, 1); imshow(I1); title('Image 1');
@@ -20,5 +20,5 @@ subplot(3, 2, 4); showflow(Ulk, Vlk, 'field'); title('Lucas-Kanade (field)');
 subplot(3, 2, 5); showflow(Uhs, Vhs, 'color'); title('Horn-Schunck (color)');
 subplot(3, 2, 6); showflow(Uhs, Vhs, 'field'); title('Horn-Schunck (field)');
 hold off;
-saveas(gcf, 'results/exercise01_1.png');
-%waitfor(gcf);
+%saveas(gcf, 'results/exercise01_1.png');
+waitfor(gcf);
