@@ -1,5 +1,7 @@
-pkg load image
-pkg load image-acquisition
+warning('off');
+pkg load image;
+pkg load parallel;
+pkg load image-acquisition;
 
 function I = rgb2gray(I)
     I = 0.32.*I(:,:,3) + 0.32.*I(:,:,2) + 0.32.*I(:,:,1);
@@ -18,7 +20,7 @@ while true
     I1 = rgb2gray(getsnapshot(obj));
     I2 = rgb2gray(getsnapshot(obj));
 
-    [U, V] = lucaskanade(I1, I2, 5);
+    [U, V] = lucaskanade_parallel_pyramidal(I1, I2, 3, 4);
     
     subplot(1, 3, 1); imshow(I1); title('Image 1');
     subplot(1, 3, 2); imshow(I2); title('Image 2');
