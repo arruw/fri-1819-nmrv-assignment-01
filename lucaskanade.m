@@ -3,8 +3,8 @@ function [U, V] = lucaskanade(I1, I2, n)
 % I2 - second image matrix (grayscale)
 % n - size of the neighborhood (n x n)
 
-[I1x, I1y] = gaussderiv(I1, 1);
-[I2x, I2y] = gaussderiv(I2, 1);
+[I1x, I1y] = gaussderiv(gausssmooth(I1, 1.0), 1);
+[I2x, I2y] = gaussderiv(gausssmooth(I2, 1.0), 1);
 Ix = 1/2 .* (I1x + I2x);
 Iy = 1/2 .* (I1y + I2y);
 It = gausssmooth(I2 - I1, 1.0);
