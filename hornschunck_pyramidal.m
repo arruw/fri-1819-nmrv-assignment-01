@@ -1,7 +1,8 @@
-function [U, V] = lucaskanade_pyramidal(I1, I2, n, Lm)
+function [U, V] = hornschunck_pyramidal(I1, I2, lambda, iterations, Lm)
 % I1 - first image matrix (grayscale)
 % I2 - second image matrix (grayscale)
-% n - size of the neighborhood (n x n)
+% lambda - parameter
+% iterations - number of iterations (try several hundred)
 % Lm - number of pyramid levels
 
 % create image pyramid
@@ -25,8 +26,8 @@ for L = Lm:-1:1
         IL2{L} = imwarp(IL2{L}, Df);      % warp second image with Df
     end
 
-    % perform lucaskanade
-    [U{L}, V{L}] = lucaskanade(IL1{L}, IL2{L}, n);
+    % perform hornschunck
+    [U{L}, V{L}] = hornschunck(IL1{L}, IL2{L}, lambda, iterations);
 
 end
 
