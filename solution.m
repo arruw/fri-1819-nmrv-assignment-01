@@ -1,19 +1,19 @@
 I1 = rand(1000, 1000);
 I2 = imrotate(I1, 1, 'bicubic', 'crop');
 
-% I1 = imread('./disparity/office2_left.png');
-% I2 = imread('./disparity/office2_right.png');
+% I1 = imread('./resources/disparity/office2_left.png');
+% I2 = imread('./resources/disparity/office2_right.png');
 
-% I1 = imread('./disparity/cporta_left.png');
-% I2 = imread('./disparity/cporta_right.png');
+% I1 = imread('./resources/disparity/cporta_left.png');
+% I2 = imread('./resources/disparity/cporta_right.png');
 
-% I1 = imread('./collision/00000001.jpg');
-% I2 = imread('./collision/00000002.jpg');
+% I1 = imread('./resources/collision/00000001.jpg');
+% I2 = imread('./resources/collision/00000002.jpg');
 
 [Ulk, Vlk] = lucaskanade(I1, I2, 3);
 [Ulkp, Vlkp] = lucaskanade_pyramidal(I1, I2, 3, 4);
-[Uhs, Vhs] = hornschunck(I1, I2, 0.5, 2000);
-[Uhsp, Vhsp] = hornschunck_pyramidal(I1, I2, 0.5, 2000, 4);
+[Uhs, Vhs] = hornschunck(I1, I2, 0.5, 200);
+[Uhsp, Vhsp] = hornschunck_pyramidal(I1, I2, 0.5, 200, 4);
 
 figure(1); clf;
 %set(gcf, 'visible', 'off');
