@@ -4,7 +4,8 @@ function [U, V] = lucaskanade_pyramidal(I1, I2, n, Lm)
 % n - size of the neighborhood (n x n)
 % l - number of pyramid levels
 
-U{1} = V{1} = zeros(size(I1));
+U{1} = zeros(size(I1));
+V{1} = U{1};
 d = cat(2, [0 0],  fliplr(size(I1)));
 
 % create image pyramid
@@ -13,7 +14,7 @@ IL2{1} = I2;
 for L = 2:Lm
     IL1{L} = imresize(IL1{L-1}, 0.5);
     IL2{L} = imresize(IL2{L-1}, 0.5);
-endfor
+end
 
 % this can be parallelized
 for L = Lm:-1:1
@@ -26,15 +27,15 @@ for L = Lm:-1:1
     VL = imcrop(imresize(VL, 2^(L-1)), d);
 
     % save results
-    U{L} = UL ./ 2^(Lm - L);
-    V{L} = VL ./ 2^(Lm - L);
-endfor
+    U{L} = UL ./ 2^(Lm - L + 1);
+    V{L} = VL ./ 2^(Lm - L + 1);
+end
 
 % reduce results
 for L = 2:Lm
     U{1} = U{1} + U{L}; 
     V{1} = V{1} + V{L}; 
-endfor
+end
 
 U = U{1};
 V = V{1};

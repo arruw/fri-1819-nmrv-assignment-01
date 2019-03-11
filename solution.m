@@ -1,6 +1,6 @@
-warning('off');
-pkg load image;
-pkg load parallel;
+%warning('off');
+%pkg load image;
+%pkg load parallel;
 
 % I1 = rand(200, 200);
 % I2 = imrotate(I1, 1, 'bicubic', 'crop');
@@ -9,7 +9,7 @@ I1 = imread('./home/img-0010-1.png');
 I2 = imread('./home/img-0010-2.png');
 
 [Ulk, Vlk] = lucaskanade(I1, I2, 3);
-[Ulkp, Vlkp] = lucaskanade_parallel_pyramidal(I1, I2, 3, 4);
+[Ulkp, Vlkp] = lucaskanade_pyramidal(I1, I2, 3, 4);
 [Uhs, Vhs] = hornschunck(I1, I2, 0.5, 2000);
 
 figure(1); clf;

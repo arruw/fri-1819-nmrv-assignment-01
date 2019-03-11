@@ -1,11 +1,6 @@
-warning('off');
-pkg load image;
-pkg load parallel;
-pkg load image-acquisition;
-
 function I = rgb2gray(I)
     I = 0.32.*I(:,:,3) + 0.32.*I(:,:,2) + 0.32.*I(:,:,1);
-endfunction
+end
 
 delete('results/camera/*')
 seq = 1
@@ -32,4 +27,4 @@ while true
 
     seq = seq + 1;
     pause(0.1);    
-endwhile
+end

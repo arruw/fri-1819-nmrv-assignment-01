@@ -18,7 +18,7 @@ for li = 2:l
     lc{li} = lc{li-1};
     lic{li} = li;
     dc{li} = dc{li-1};
-endfor
+end
 
 [U, V] = parcellfun(nproc, @lk_layer, Il1, Il2, nc, lc, lic, dc);
 
@@ -26,7 +26,7 @@ endfor
 for li = 2:l
     U{1} = U{1} + U{li}; 
     V{1} = V{1} + V{li}; 
-endfor
+end
 
 U = U{1};
 V = V{1};

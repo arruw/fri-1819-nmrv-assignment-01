@@ -27,6 +27,6 @@ Vli = imcrop(imresize(Vli, li2), d);
 
 % save results
 % TODO: are this weight correct?
-U{1} = Uli ./ 2^(l-li);
-V{1} = Vli ./ 2^(l-li);
+U{1} = Uli ./ 2^(l-li+1);
+V{1} = Vli ./ 2^(l-li+1);
     

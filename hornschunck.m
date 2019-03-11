@@ -16,7 +16,8 @@ It = gausssmooth(I2 - I1, 1.0);
 Ix2 = Ix.^2;
 Iy2 = Iy.^2;
 
-U = V = zeros(size(I1));
+U = zeros(size(I1));
+V = U;
 
 D = lambda + Ix2 + Iy2;
 
@@ -28,4 +29,4 @@ for i = 1:iterations
 
     U = ua - Ix .* (P ./ D);
     V = va - Iy .* (P ./ D);
-endfor
+end
