@@ -1,0 +1,80 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{siunitx}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\begin{document}
+%
+\title{Report 1: Optical flow}
+%
+%\titlerunning{Abbreviated paper title}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Matjaž Mav}
+\institute{Advanced Computer Vision Methods}
+%
+\maketitle              % typeset the header of the contribution
+%
+
+\section{Introduction}
+In this short report I will briefly explain two most known optical flow estimation approaches; the Lucas-Kanade and the Horn-Schunck. To be able to detect optical flow, both approaches assumes \textbf{intensity constancy} and \textbf{small motion displacement}. With this two assumptions we can derive equation (\ref{eq_0}) where $I_x$, $I_y$, $I_t$ are deviates of the image intensity and the two unknowns $u$, $v$ that represent optical flow.
+
+\begin{equation}
+\label{eq_0}
+I_x*u+I_y*v+I_t = 0
+\end{equation}
+
+To be able to solve equation (\ref{eq_0}) with two unknowns, both Lucas-Kanade and the Horn-Schunck introduces additional assumption.
+
+Lucas-Kanade approach assumes \textbf{local motion coherence}, which assumes that local pixels share the same flow.
+
+Horn-Schunck approach assumes \textbf{smoothness in the optical flow} over the whole image.
+
+\section{Problem solution}
+To solve this exercise I used instructions provided in the exercise description and lecture notes. In this section I will present ideas behind implementations of the basic and pyramidal Lucas-Kanade and Horn-Schunck algorithms. Then I will compare results of these algorithms on different images and review its parameters.
+
+\subsection{Implementation}
+For implementation I used MATLAB, all source files are publicly available at GitHub repository \href{https://github.com/matjazmav/fri-1819-nmrv-assignment-01}{matjazmav/fri-1819-nmrv-assignment-01}.
+
+Because all the necessary equations was well explained in exercise description, implementations of both basic algorithms was simple. Here I will focus on my pyramidal implementation. \newpage Here are the steps that my pyramidal implementation follows:
+
+\begin{enumerate}
+    \item For each layer we prepare down-scaled images. We start at layer $1$ and go up to layer $Lm$. At each layer we down-scale both original images $I1$ and $I2$ by $2^{L-1}$ ($L$ denotes current layer index).
+    \item For each layer (start at layer $Lm$ and move to down layer $1$) do following ($I1\{L\}$ and $L2\{L\}$ denote first and second image at layer $L$):
+    \begin{enumerate}
+        \item Warp second image $I2\{L\}$ with displacement field $Df\{L-1\}$ calculated at previous layer. \textbf{Skip this step in first iteration.}
+        \item Preform basic Lucas-Kanade or Horn-Schunck on the first image $I1\{L\}$ and warped second image $I2\{L\}$. Save the  displacement field $Df\{L\}$ for later use.
+    \end{enumerate}
+    \item Sum displacement fields $Df$  for all the layers.
+\end{enumerate}
+
+Before I had implemented pyramidal approach, I had slightly simplified implementation for pyramidal approach. This simplified implementation did not warp image, but only sum displacement fields with inversely proportional weights. That means that top layer added most weight to summed displacement fields. I had implemented this simplified approach with parallel execution, so it is quite quick.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=1.0\textwidth]{results/comparison_random_1000_1.jpg}
+\caption{Example of random generated 1000x1000 image and rotation of \ang{1} \label{img_0}}
+\end{figure}
+
+\subsection{Comparison}
+
+\subsection{Parameters}
+
+\section{Conclusion}
+
+\end{document}
