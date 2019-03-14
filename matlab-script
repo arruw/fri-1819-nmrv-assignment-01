@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# matlab -nodesktop -nosplash -r "try $1; exit(0); catch e; fprintf(2,'[ERROR]: %s\n',e.message); exit(1); end" | sed 1,10d
+matlab -nodesktop -nosplash -r "$1; exit(0);" | sed 1,10d

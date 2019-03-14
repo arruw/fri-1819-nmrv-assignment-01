@@ -6,6 +6,8 @@ function [U, V] = hornschunck_pyramidal(I1, I2, lambda, iterations, Lm)
 % Lm - number of pyramid levels
 
 % create image pyramid
+IL1 = cell(1, Lm);
+IL2 = cell(1, Lm);
 IL1{1} = I1;
 IL2{1} = I2;
 for L = 2:Lm
@@ -13,9 +15,11 @@ for L = 2:Lm
     IL2{L} = imresize(IL2{L-1}, 0.5);
 end
 
-% go down the pyramid
+% go down the pyramid & calculate HS optical flow on each leavel
 for L = Lm:-1:1
 
+    % warp second image on curren layer with
+    % with displacement field of previous layer
     if Lm > L
         crop = cat(2, [0 0],  fliplr(size(IL1{L})));
         
@@ -32,14 +36,14 @@ for L = Lm:-1:1
 end
 
 % aggregate OP of each layer
-d = cat(2, [0 0],  fliplr(size(I1)));
+crop = cat(2, [0 0],  fliplr(size(I1)));
 for L = 2:Lm
 
-    scale = 2^(L-1);
-
+    
     % scale OF vectors
-    UL = imcrop(imresize(U{L} .* scale, scale), d); %./2^(L-1)
-    VL = imcrop(imresize(V{L} .* scale, scale), d); 
+    scale = 2^(L-1);
+    UL = imcrop(imresize(U{L} .* scale, scale), crop);
+    VL = imcrop(imresize(V{L} .* scale, scale), crop); 
 
     % aggregate OF vectors
     U{1} = U{1} + UL;

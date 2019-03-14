@@ -30,3 +30,6 @@ for i = 1:iterations
     U = ua - Ix .* (P ./ D);
     V = va - Iy .* (P ./ D);
 end
+
+U(isinf(U)|isnan(U)) = 0;
+V(isinf(V)|isnan(V)) = 0;
