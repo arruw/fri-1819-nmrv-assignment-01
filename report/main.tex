@@ -55,23 +55,43 @@ Because all the necessary equations was well explained in exercise description, 
 
 \begin{enumerate}
     \item For each layer we prepare down-scaled images. We start at layer $1$ and go up to layer $Lm$. At each layer we down-scale both original images $I1$ and $I2$ by $2^{L-1}$ ($L$ denotes current layer index).
-    \item For each layer (start at layer $Lm$ and move to down layer $1$) do following ($I1\{L\}$ and $L2\{L\}$ denote first and second image at layer $L$):
+    \item We start at layer $Lm$ and move to down layer $1$, at each layer we do following ($I1\{L\}$ and $L2\{L\}$ denote first and second image at layer $L$):
     \begin{enumerate}
         \item Warp second image $I2\{L\}$ with displacement field $Df\{L-1\}$ calculated at previous layer. \textbf{Skip this step in first iteration.}
         \item Preform basic Lucas-Kanade or Horn-Schunck on the first image $I1\{L\}$ and warped second image $I2\{L\}$. Save the  displacement field $Df\{L\}$ for later use.
     \end{enumerate}
-    \item Sum displacement fields $Df$  for all the layers.
+    \item For each layer resize displacement field to original size and then scale vectors proportionally with the resize factor. At the end sum all displacement fields.
 \end{enumerate}
 
 Before I had implemented pyramidal approach, I had slightly simplified implementation for pyramidal approach. This simplified implementation did not warp image, but only sum displacement fields with inversely proportional weights. That means that top layer added most weight to summed displacement fields. I had implemented this simplified approach with parallel execution, so it is quite quick.
 
+\subsection{Comparison}
+
+First I compared all the three pyramidal approaches that I had implemented on a random 1000x1000 generated image and its rotation of \ang{1}. This is visualized on the figure \ref{img_0}. There we can observe that on the first layer all three implementations had poor results. That is because on the edge of the image pixels had relatively large displacement, and that is against our small motion displacement assumption. At each next layer we can observe that estimation was closer to the ground truth. Final result in my opinion is relatively good.
+
 \begin{figure}[ht!]
-\centering
-\includegraphics[width=1.0\textwidth]{results/comparison_random_1000_1.jpg}
-\caption{Example of random generated 1000x1000 image and rotation of \ang{1} \label{img_0}}
+    \centering
+    \includegraphics[width=1.0\textwidth,trim=12cm 0cm 13cm 0cm,clip]{results/comparison_random_1000_1_layers_with_labels.jpg}
+    \caption{Layered comparison of the pyramidal approaches on random generated 1000x1000 image and rotation of \ang{1}.
+    \newline 
+    \newline\textit{LKP} - Lucas-Kanade pyramidal (n=3)
+    \newline\textit{LKPP} - Lucas-Kanade parallel pyramidal (n=3)
+    \newline\textit{HSP} - Horn-Schunck pyramidal (lambda=0.5, iterations=2000)
+    \label{img_0}}
 \end{figure}
 
-\subsection{Comparison}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=1.0\textwidth,trim=12cm 0cm 12cm 0cm,clip]{results/comparison_7x7_labled.jpg}
+    \caption{Comparison of 7 different images between different optical flow estimation algorithms.
+    \newline
+    \newline\textit{LK} - Lucas-Kanade (n=3)
+    \newline\textit{LKPP} - Lucas-Kanade pyramidal (n=3, layers=4)
+    \newline\textit{LKPP} - Lucas-Kanade parallel pyramidal (n=3, layers=4)
+    \newline\textit{HS} - Horn-Schunck (lambda=0.5, iterations=2000)
+    \newline\textit{HSP} - Horn-Schunck pyramidal (lambda=0.5, iterations=2000, layers=4)
+    \label{img_1}}
+\end{figure}
 
 \subsection{Parameters}
 

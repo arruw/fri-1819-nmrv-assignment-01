@@ -1,4 +1,4 @@
-function [U, V] = lucaskanade_parallel_pyramidal(I1, I2, n, Lm)
+function [Uf, Vf, U, V] = lucaskanade_parallel_pyramidal(I1, I2, n, Lm)
 % I1 - first image matrix (grayscale)
 % I2 - second image matrix (grayscale)
 % n - size of the neighborhood (n x n)
@@ -29,12 +29,9 @@ parfor L = 1:Lm
 end
 
 % aggregate OP of each layer
+Uf = U{1};
+Vf = V{1};
 for L = 2:Lm
-
-    U{1} = U{1} + U{L};
-    V{1} = V{1} + V{L};
-end 
-
-% return OF vectors
-U = U{1};
-V = V{1};
+    Uf = Uf + U{L};
+    Vf = Vf + V{L};
+end

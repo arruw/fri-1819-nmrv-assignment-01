@@ -1,4 +1,4 @@
-function [U, V] = lucaskanade_pyramidal(I1, I2, n, Lm)
+function [Uf, Vf, U, V] = lucaskanade_pyramidal(I1, I2, n, Lm)
 % I1 - first image matrix (grayscale)
 % I2 - second image matrix (grayscale)
 % n - size of the neighborhood (n x n)
@@ -35,19 +35,17 @@ for L = Lm:-1:1
 end
 
 % aggregate OP of each layer
+Uf = U{1};
+Vf = V{1};
 crop = cat(2, [0 0],  fliplr(size(I1)));
 for L = 2:Lm
     
     % scale OF vectors
     scale = 2^(L-1);
-    UL = imcrop(imresize(U{L} .* scale, scale), crop);
-    VL = imcrop(imresize(V{L} .* scale, scale), crop); 
+    U{L} = imcrop(imresize(U{L} .* scale, scale), crop);
+    V{L} = imcrop(imresize(V{L} .* scale, scale), crop); 
 
     % aggregate OF vectors
-    U{1} = U{1} + UL;
-    V{1} = V{1} + VL;
-end 
-
-% return OF vectors
-U = U{1};
-V = V{1};
+    Uf = Uf + U{L};
+    Vf = Vf + V{L};
+end
