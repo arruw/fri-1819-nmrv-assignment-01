@@ -17,57 +17,57 @@
 %
 
 \section{Introduction}
-In this short report I will briefly explain two most known optical flow estimation approaches; the Lucas-Kanade and the Horn-Schunck. To be able to detect optical flow, both approaches assumes \textbf{intensity constancy} and \textbf{small motion displacement}. With this two assumptions we can derive equation (\ref{eq_0}) where $I_x$, $I_y$, $I_t$ are deviates of the image intensity and the two unknowns $u$, $v$ that represent optical flow.
+In this short report, I will briefly explain two most known optical flow estimation approaches; the Lucas-Kanade and the Horn-Schunck. To be able to detect optical flow, both approaches assume \textbf{intensity constancy} and \textbf{small motion displacement}. With these two assumptions, we can derive equation (\ref{eq_0}) where $I_x$, $I_y$, $I_t$ are deviates of the image intensity and the two unknowns $u$, $v$ that represent the optical flow.
 
 \begin{equation}
 \label{eq_0}
 I_x*u+I_y*v+I_t = 0
 \end{equation}
 
-To be able to solve equation (\ref{eq_0}) with two unknowns, both Lucas-Kanade and the Horn-Schunck introduces additional assumption.
+To be able to solve the equation (\ref{eq_0}) with two unknowns, both Lucas-Kanade and the Horn-Schunck introduces additional assumption.
 
 Lucas-Kanade approach assumes \textbf{local motion coherence}, which assumes that local pixels share the same flow.
 
 Horn-Schunck approach assumes \textbf{smoothness in the optical flow} over the whole image.
 
 \section{Problem solution}
-To solve this exercise I used instructions provided in the exercise description and lecture notes. In this section I will present ideas behind implementations of the basic and pyramidal Lucas-Kanade and Horn-Schunck algorithms. Then I will compare results of these algorithms on different images and review its parameters.
+To solve this exercise I used instructions provided in the exercise description and lecture notes. In this section, I will present ideas behind implementations of the basic and pyramidal Lucas-Kanade and Horn-Schunck algorithms. Then I will compare the results of these algorithms on different images.
 
 \subsection{Implementation}
 For implementation I used MATLAB, all source files are publicly available at GitHub repository \href{https://github.com/matjazmav/fri-1819-nmrv-assignment-01}{matjazmav/fri-1819-nmrv-assignment-01}.
 
-Because all the necessary equations was well explained in exercise description, implementations of both basic algorithms was simple. Here I will focus on my pyramidal implementation. \newpage Here are the steps that my pyramidal implementation follows:
+Because all the necessary equations ware well explained in exercise description, implementations of both basic algorithms ware simple. Here I will focus on my pyramidal implementation. \newpage Here are the steps that my pyramidal implementation follows:
 
 \begin{enumerate}
-    \item For each layer we prepare down-scaled images. We start at layer $1$ and go up to layer $Lm$. At each layer we down-scale both original images $I1$ and $I2$ by $2^{L-1}$ ($L$ denotes current layer index).
-    \item We start at layer $Lm$ and move to down layer $1$, at each layer we do following ($I1\{L\}$ and $L2\{L\}$ denote first and second image at layer $L$):
+    \item For each layer, we prepare down-scaled images. We start at layer $1$ and go up to layer $Lm$. At each layer we down-scale both original images $I1$ and $I2$ by $2^{L-1}$ ($L$ denotes current layer index).
+    \item We start at layer $Lm$ and move to down layer $1$, at each layer we do following ($I1\{L\}$ and $L2\{L\}$ denote first and the second image at layer $L$):
     \begin{enumerate}
-        \item Warp second image $I2\{L\}$ with displacement field $Df\{L-1\}$ calculated at previous layer. \textbf{Skip this step in first iteration.}
-        \item Preform basic Lucas-Kanade or Horn-Schunck on the first image $I1\{L\}$ and warped second image $I2\{L\}$. Save the  displacement field $Df\{L\}$ for later use.
+        \item Warp second image $I2\{L\}$ with displacement field $Df\{L-1\}$ calculated at the previous layer. \textbf{Skip this step in first iteration.}
+        \item Perform basic Lucas-Kanade or Horn-Schunck on the first image $I1\{L\}$ and warped second image $I2\{L\}$. Save the displacement field $Df\{L\}$ for later use.
     \end{enumerate}
     \item For each layer resize displacement field to original size and then scale vectors proportionally with the resize factor. At the end sum all displacement fields.
 \end{enumerate}
 
-Before I had implemented pyramidal approach, I had slightly simplified implementation for pyramidal approach. This simplified implementation did not warp image, but only sum displacement fields with inversely proportional weights. That means that top layer added most weight to summed displacement fields. I had implemented this simplified approach with parallel execution, so it is quite quick.
+Before I had implemented the pyramidal approach, I had a slightly simplified implementation for the pyramidal approach. This simplified implementation did not warp image but only sum displacement fields with inversely proportional weights. That means that the top layer added most weight to summed displacement fields. I had implemented this simplified approach with parallel execution, so it is quite quick.
 
 \subsection{Comparison}
 
-First I compared all the three pyramidal approaches that I had implemented on a random 1000x1000 generated image and its rotation of \ang{1}. This is visualized on the figure \ref{img_0}. There we can observe that on the first layer all three implementations had poor results. That is because on the edge of the image pixels had relatively large displacement, and that is against our small motion displacement assumption. At each next layer we can observe that estimation was closer to the ground truth. Final result in my opinion is relatively good.
+First I compared all the three pyramidal approaches that I had implemented on a random 1000x1000 generated image and its rotation of \ang{1}. This is visualized on the figure \ref{img_0}. There we can observe that on the first layer all three implementations had poor results. That is because on the edge of the image pixels had relatively large displacement, and that is against our small motion displacement assumption. At each next layer, we can observe that the estimation was closer to the ground truth. The final result, in my opinion, is relatively good.
 
-Second I compared how optical flow estimation algorithms preform on 7 different images. This is visualized on the figure \ref{img_1}. From my observation all algorithms have problem with image noise. That is clearly visible in example 7, there is strong displacement field over the wall in the background. The quality of optical flow estimation probably depends on quality of the camera, lighting and image texture. To improve optical flow estimation we could probably use Harris Corner edge detector and then estimate optical flow only on these pixels.
+Second I compared how optical flow estimation algorithms perform on 7 different images. This is visualized on the figure \ref{img_1}. From my observation, all algorithms have a problem with image noise. That is clearly visible in example 7, there is a strong displacement field over the wall in the background. The quality of optical flow estimation probably depends on the quality of the camera, lighting and image texture. To improve optical flow estimation we could probably use Harris Corner edge detector and then estimate optical flow only on these pixels. 
 
-\begin{figure}[ht!]
+\begin{figure}
     \centering
     \includegraphics[width=1.0\textwidth,trim=12cm 0cm 13cm 0cm,clip]{results/comparison_random_1000_1_layers_with_labels.jpg}
     \caption{Layered comparison of the pyramidal approaches on random generated 1000x1000 image and rotation of \ang{1}.
     \newline 
     \newline\textit{LKP} - Lucas-Kanade pyramidal (n=3)
     \newline\textit{LKPP} - Lucas-Kanade parallel pyramidal (n=3)
-    \newline\textit{HSP} - Horn-Schunck pyramidal (lambda=0.5, iterations=2000)
-    \label{img_0}}
+    \newline\textit{HSP} - Horn-Schunck pyramidal (lambda=0.5, iterations=2000)}
+    \label{img_0}
 \end{figure}
 
-\begin{figure}[ht!]
+\begin{figure} 
     \centering
     \includegraphics[width=1.0\textwidth,trim=12cm 0cm 12cm 0cm,clip]{results/comparison_7x7_labled.jpg}
     \caption{Comparison of 7 different images between different optical flow estimation algorithms.
@@ -76,12 +76,13 @@ Second I compared how optical flow estimation algorithms preform on 7 different 
     \newline\textit{LKPP} - Lucas-Kanade pyramidal (n=3, layers=4)
     \newline\textit{LKPP} - Lucas-Kanade parallel pyramidal (n=3, layers=4)
     \newline\textit{HS} - Horn-Schunck (lambda=0.5, iterations=2000)
-    \newline\textit{HSP} - Horn-Schunck pyramidal (lambda=0.5, iterations=2000, layers=4)
-    \label{img_1}}
+    \newline\textit{HSP} - Horn-Schunck pyramidal (lambda=0.5, iterations=2000, layers=4}
+    \label{img_1}
 \end{figure}
 
-\subsection{Parameters}
+\newpage
 
 \section{Conclusion}
+From experiments, I had learned that the pyramidal implementation improves estimation over stronger displacement field. In my experiments, all the implementations had a problem estimating optical flow on static background objects (for example walls). That is probably because images ware captured with a low-quality camera. This is visible on figure \ref{img_1}. If we compare the example from the lab (2) with my home experiment (7), we can see that in the example (2) walls in the background have no corresponding optical flow, but in the experiment (7) they do. To overcome this I should probably do some image preprocessing or used Harris Corner to detect areas where optical flow could be more reliably estimated.     
 
 \end{document}
